@@ -1,0 +1,33 @@
+2025-05-17 16:52:09,169 - yfinance - ERROR - 
+1 Failed download:
+2025-05-17 16:52:09,170 - yfinance - ERROR - ['AAPL']: YFRateLimitError('Too Many Requests. Rate limited. Try after a while.')
+2025-05-17 16:52:30,604 - yfinance - ERROR - 
+1 Failed download:
+2025-05-17 16:52:30,605 - yfinance - ERROR - ['AAPL']: YFRateLimitError('Too Many Requests. Rate limited. Try after a while.')
+2025-05-17 16:54:11,790 - yfinance - ERROR - 
+1 Failed download:
+2025-05-17 16:54:11,791 - yfinance - ERROR - ['AAPL']: YFRateLimitError('Too Many Requests. Rate limited. Try after a while.')
+2025-05-17 16:56:04,810 - yfinance - ERROR - 
+1 Failed download:
+2025-05-17 16:56:04,811 - yfinance - ERROR - ['AAPL']: YFRateLimitError('Too Many Requests. Rate limited. Try after a while.')
+2025-05-17 17:03:56,798 - yfinance - ERROR - 
+1 Failed download:
+2025-05-17 17:03:56,799 - yfinance - ERROR - ['AAPL']: YFRateLimitError('Too Many Requests. Rate limited. Try after a while.')
+2025-05-17 17:04:22,486 - yfinance - ERROR - 
+1 Failed download:
+2025-05-17 17:04:22,490 - yfinance - ERROR - ['AAPL']: YFRateLimitError('Too Many Requests. Rate limited. Try after a while.')
+2025-05-17 17:04:44,203 - yfinance - ERROR - 
+1 Failed download:
+2025-05-17 17:04:44,203 - yfinance - ERROR - ['AAPL']: YFRateLimitError('Too Many Requests. Rate limited. Try after a while.')
+2025-05-17 17:05:20,041 - yfinance - ERROR - 
+1 Failed download:
+2025-05-17 17:05:20,043 - yfinance - ERROR - ['EURUSD=X']: YFRateLimitError('Too Many Requests. Rate limited. Try after a while.')
+2025-05-17 17:05:57,901 - yfinance - ERROR - 
+1 Failed download:
+2025-05-17 17:05:57,902 - yfinance - ERROR - ['EURUSD=X']: YFRateLimitError('Too Many Requests. Rate limited. Try after a while.')
+2025-05-17 17:06:34,001 - yfinance - ERROR - 
+1 Failed download:
+2025-05-17 17:06:34,002 - yfinance - ERROR - ['EURUSD=X']: YFRateLimitError('Too Many Requests. Rate limited. Try after a while.')
+2025-05-17 18:51:45,079 - yfinance - ERROR - 
+1 Failed download:
+2025-05-17 18:51:45,079 - yfinance - ERROR - ['AAPL']: YFRateLimitError('Too Many Requests. Rate limited. Try after a while.')

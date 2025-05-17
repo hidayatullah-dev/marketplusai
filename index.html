@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financial Market Predictor</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h1 class="animate-float">📊 Market Navigator</h1>
+                <p class="subtitle">Real-time financial analysis</p>
+            </div>
+            <div class="sidebar-divider"></div>
+
+            <div class="sidebar-section">
+                <h3>🔍 Select Market</h3>
+                <div class="radio-group">
+                    <label class="radio-container">
+                        <input type="radio" name="asset-type" value="stocks" checked>
+                        <span class="radio-label">Stocks</span>
+                    </label>
+                    <label class="radio-container">
+                        <input type="radio" name="asset-type" value="forex">
+                        <span class="radio-label">Forex</span>
+                    </label>
+                    <label class="radio-container">
+                        <input type="radio" name="asset-type" value="commodities">
+                        <span class="radio-label">Commodities</span>
+                    </label>
+                    <label class="radio-container">
+                        <input type="radio" name="asset-type" value="crypto">
+                        <span class="radio-label">Cryptocurrency</span>
+                        <span class="premium-badge animate-pulse">NEW</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <h4>Select Asset</h4>
+                <select id="asset-selector" class="dropdown">
+                    <option value="GC=F">GC-F (Gold)</option>
+                    <option value="SI=F">SI-F (Silver)</option>
+                    <option value="CL=F">CL-F (Crude Oil)</option>
+                    <option value="NG=F">NG-F (Natural Gas)</option>
+                    <option value="HG=F">HG-F (Copper)</option>
+                </select>
+            </div>
+
+            <div class="sidebar-section">
+                <h4>Historical Data Period</h4>
+                <div class="slider-container">
+                    <input type="range" min="1" max="5" step="1" value="3" class="slider" id="period-slider">
+                    <div class="slider-labels">
+                        <span>1 Month</span>
+                        <span>5 Years</span>
+                    </div>
+                    <div class="slider-value">1 Year</div>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <h4>Prediction Horizon (Days)</h4>
+                <div class="slider-container">
+                    <input type="range" min="1" max="30" value="7" class="slider" id="prediction-slider">
+                    <div class="slider-labels">
+                        <span>1</span>
+                        <span>30</span>
+                    </div>
+                    <div class="slider-value">7</div>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <h3>Technical Indicators</h3>
+                <label class="checkbox-container">
+                    <input type="checkbox" checked id="sma-checkbox">
+                    <span class="checkbox-label">Simple Moving Average (SMA)</span>
+                </label>
+                <label class="checkbox-container">
+                    <input type="checkbox" id="ema-checkbox">
+                    <span class="checkbox-label">Exponential Moving Average (EMA)</span>
+                </label>
+                <label class="checkbox-container">
+                    <input type="checkbox" id="bollinger-checkbox">
+                    <span class="checkbox-label">Bollinger Bands</span>
+                </label>
+                <label class="checkbox-container">
+                    <input type="checkbox" id="rsi-checkbox">
+                    <span class="checkbox-label">Relative Strength Index (RSI)</span>
+                </label>
+                <label class="checkbox-container">
+                    <input type="checkbox" id="macd-checkbox">
+                    <span class="checkbox-label">MACD</span>
+                </label>
+                <label class="checkbox-container">
+                    <input type="checkbox" id="fibonacci-checkbox">
+                    <span class="checkbox-label">Fibonacci Retracement</span>
+                    <span class="premium-badge animate-pulse">PRO</span>
+                </label>
+                <label class="checkbox-container">
+                    <input type="checkbox" id="ichimoku-checkbox">
+                    <span class="checkbox-label">Ichimoku Cloud</span>
+                    <span class="premium-badge animate-pulse">PRO</span>
+                </label>
+            </div>
+
+            <div class="sidebar-section">
+                <h3>Prediction Models</h3>
+                <div class="radio-group">
+                    <label class="radio-container">
+                        <input type="radio" name="model-type" value="linear" checked>
+                        <span class="radio-label">Linear Trend</span>
+                    </label>
+                    <label class="radio-container">
+                        <input type="radio" name="model-type" value="arima">
+                        <span class="radio-label">ARIMA</span>
+                    </label>
+                    <label class="radio-container">
+                        <input type="radio" name="model-type" value="ml">
+                        <span class="radio-label">Machine Learning</span>
+                        <span class="premium-badge animate-pulse">PRO</span>
+                    </label>
+                </div>
+            </div>
+
+            <button class="refresh-button">🔄 Refresh Data</button>
+            <button class="refresh-button" style="margin-top: 10px; background-color: gold; color: black;">
+                <i class="fas fa-crown"></i> Upgrade to PRO
+            </button>
+        </div>
+
+        <!-- Main content -->
+        <div class="main-content">
+            <h1 class="main-title animate-fade-in">Financial Market Predictor</h1>
+            
+            <div class="last-updated animate-fade-in">
+                <h4>
+                    <span class="light-text">Live Data</span> • Last updated: <span id="update-time">2025-05-17 10:20:53</span>
+                    <span class="real-time-badge animate-pulse">REAL-TIME</span>
+                </h4>
+            </div>
+
+            <!-- Metrics -->
+            <div class="metrics-container">
+                <div class="metric-card animate-fade-in">
+                    <div class="metric-title">Current Price</div>
+                    <div class="metric-value">$3182.00</div>
+                    <div class="metric-change negative">-1.20% Today</div>
+                </div>
+                <div class="metric-card animate-fade-in" style="animation-delay: 0.1s">
+                    <div class="metric-title">1 Year Change</div>
+                    <div class="metric-value">$769.80</div>
+                    <div class="metric-change positive">+31.91%</div>
+                </div>
+                <div class="metric-card animate-fade-in" style="animation-delay: 0.2s">
+                    <div class="metric-title">Volume (Avg)</div>
+                    <div class="metric-value">4.30K</div>
+                </div>
+                <div class="metric-card animate-fade-in" style="animation-delay: 0.3s">
+                    <div class="metric-title">Volatility</div>
+                    <div class="metric-value">1.16%</div>
+                </div>
+            </div>
+
+            <!-- Display Options -->
+            <div class="visualization-options animate-fade-in">
+                <div class="option-card active" data-option="candle">
+                    <i class="fas fa-chart-bar"></i>
+                    <div>Candlestick</div>
+                </div>
+                <div class="option-card" data-option="line">
+                    <i class="fas fa-chart-line"></i>
+                    <div>Line Chart</div>
+                </div>
+                <div class="option-card" data-option="ohlc">
+                    <i class="fas fa-chart-bar"></i>
+                    <div>OHLC</div>
+                </div>
+                <div class="option-card" data-option="area">
+                    <i class="fas fa-chart-area"></i>
+                    <div>Area Chart</div>
+                </div>
+                <div class="option-card" data-option="heikin">
+                    <i class="fas fa-chart-bar"></i>
+                    <div>Heikin Ashi</div>
+                    <span class="premium-badge animate-pulse">PRO</span>
+                </div>
+            </div>
+
+            <!-- Tabs -->
+            <div class="tabs-container">
+                <div class="tabs">
+                    <button class="tab-button active" data-tab="historical">📈 Historical Data</button>
+                    <button class="tab-button" data-tab="predictions">🔮 Predictions</button>
+                    <button class="tab-button" data-tab="analysis">📊 Advanced Analysis</button>
+                    <button class="tab-button" data-tab="pro">👑 Pro Features</button>
+                    <div class="tab-indicator" style="left: 0; width: 180px;"></div>
+                </div>
+                
+                <div class="tab-content active" id="historical-tab">
+                    <h2>Historical Price Data for GC Commodity</h2>
+                    <div class="chart-container" id="historical-chart"></div>
+                    <div class="chart-container" id="volume-chart"></div>
+                </div>
+                
+                <div class="tab-content" id="predictions-tab">
+                    <h2>Price Predictions for GC Commodity</h2>
+                    <div class="chart-container" id="prediction-chart"></div>
+
+                    <h3>Prediction Details</h3>
+                    <table class="prediction-metrics">
+                        <tr>
+                            <th>Metric</th>
+                            <th>Value</th>
+                        </tr>
+                        <tr>
+                            <td>Prediction Method</td>
+                            <td>Linear Trend Projection</td>
+                        </tr>
+                        <tr>
+                            <td>Confidence Level</td>
+                            <td>95%</td>
+                        </tr>
+                        <tr>
+                            <td>Prediction Horizon</td>
+                            <td>7 days</td>
+                        </tr>
+                    </table>
+
+                    <h3>📈 Market Insights & Technical Analysis</h3>
+                    <div class="insights-container">
+                        <div class="insight-card animate-fade-in">
+                            <div class="insight-title">RSI (14)</div>
+                            <div class="insight-value">48.32</div>
+                            <div class="insight-status neutral">Neutral</div>
+                        </div>
+                        <div class="insight-card animate-fade-in" style="animation-delay: 0.1s">
+                            <div class="insight-title">MACD</div>
+                            <div class="insight-value">12.45</div>
+                            <div class="insight-status positive">Bullish</div>
+                        </div>
+                        <div class="insight-card animate-fade-in" style="animation-delay: 0.2s">
+                            <div class="insight-title">Trend (SMA20/50)</div>
+                            <div class="insight-value">Uptrend</div>
+                            <div class="insight-status positive">+2.18%</div>
+                        </div>
+                    </div>
+
+                    <div class="forecast-summary animate-fade-in">
+                        <h4>AI Forecast Summary</h4>
+                        <p>Based on the analysis of historical data and current market conditions, the model predicts 
+                        that <strong>GC=F</strong> will likely <span class="positive-text">increase by 3.45%</span> over the next 7 days.</p>
+                        
+                        <p>The forecast considers recent price movements, volatility patterns, and technical indicators. 
+                        The confidence interval represents the range within which the price is likely to move with 95% probability.</p>
+                    </div>
+
+                    <button class="export-button animate-fade-in">Export Predictions to CSV</button>
+                </div>
+                
+                <div class="tab-content" id="analysis-tab">
+                    <h2>Advanced Technical Analysis</h2>
+                    <div class="chart-container animate-fade-in" id="advanced-chart"></div>
+                    
+                    <div class="insights-container">
+                        <div class="insight-card animate-fade-in">
+                            <div class="insight-title">Stochastic Oscillator</div>
+                            <div class="insight-value">65.7</div>
+                            <div class="insight-status neutral">Neutral</div>
+                        </div>
+                        <div class="insight-card animate-fade-in" style="animation-delay: 0.1s">
+                            <div class="insight-title">ADX (14)</div>
+                            <div class="insight-value">22.3</div>
+                            <div class="insight-status neutral">Moderate Trend</div>
+                        </div>
+                        <div class="insight-card animate-fade-in" style="animation-delay: 0.2s">
+                            <div class="insight-title">ATR (14)</div>
+                            <div class="insight-value">45.32</div>
+                            <div class="insight-status neutral">Average Volatility</div>
+                        </div>
+                    </div>
+                    
+                    <h3>Volume Profile Analysis</h3>
+                    <div class="chart-container animate-fade-in" id="volume-profile-chart"></div>
+                    
+                    <h3>Correlation Analysis</h3>
+                    <div class="visualization-options animate-fade-in">
+                        <div class="option-card active" data-correlation="sp500">
+                            <div>S&P 500</div>
+                        </div>
+                        <div class="option-card" data-correlation="dollar">
+                            <div>US Dollar</div>
+                        </div>
+                        <div class="option-card" data-correlation="vix">
+                            <div>VIX</div>
+                        </div>
+                        <div class="option-card" data-correlation="bonds">
+                            <div>10Y Treasury</div>
+                        </div>
+                    </div>
+                    <div class="chart-container animate-fade-in" id="correlation-chart"></div>
+                </div>
+
+                <!-- PRO Features Tab -->
+                <div class="tab-content" id="pro-tab">
+                    <div class="pro-section animate-fade-in">
+                        <h2><i class="fas fa-crown"></i> Upgrade to PRO</h2>
+                        
+                        <p>Unlock advanced features and gain a competitive edge in the financial markets with our Pro subscription.</p>
+                        
+                        <div class="pro-benefits">
+                            <div class="benefit-item animate-fade-in">
+                                <i class="fas fa-chart-line"></i>
+                                <div>Advanced Technical Indicators</div>
+                            </div>
+                            <div class="benefit-item animate-fade-in" style="animation-delay: 0.1s">
+                                <i class="fas fa-brain"></i>
+                                <div>AI-Powered Predictions</div>
+                            </div>
+                            <div class="benefit-item animate-fade-in" style="animation-delay: 0.2s">
+                                <i class="fas fa-bolt"></i>
+                                <div>Real-time Alerts</div>
+                            </div>
+                            <div class="benefit-item animate-fade-in" style="animation-delay: 0.3s">
+                                <i class="fas fa-cloud-download-alt"></i>
+                                <div>Export All Data & Reports</div>
+                            </div>
+                            <div class="benefit-item animate-fade-in" style="animation-delay: 0.4s">
+                                <i class="fas fa-lock"></i>
+                                <div>Premium Crypto Data</div>
+                            </div>
+                            <div class="benefit-item animate-fade-in" style="animation-delay: 0.5s">
+                                <i class="fas fa-headset"></i>
+                                <div>Priority Support</div>
+                            </div>
+                        </div>
+                        
+                        <div class="payment-container animate-fade-in">
+                            <h3>Choose Your Plan</h3>
+                            
+                            <div class="payment-plans">
+                                <div class="plan-card animate-fade-in">
+                                    <div class="plan-title">Monthly</div>
+                                    <div class="plan-price">$29<span>/month</span></div>
+                                    <p>Perfect for short-term traders</p>
+                                    <ul class="plan-features">
+                                        <li><i class="fas fa-check"></i> All Pro Features</li>
+                                        <li><i class="fas fa-check"></i> 5 Stock Alerts</li>
+                                        <li><i class="fas fa-check"></i> Daily Reports</li>
+                                    </ul>
+                                    <button class="plan-cta">Select Plan</button>
+                                </div>
+                                
+                                <div class="plan-card animate-fade-in" style="animation-delay: 0.2s">
+                                    <div class="plan-popular">MOST POPULAR</div>
+                                    <div class="plan-title">Yearly</div>
+                                    <div class="plan-price">$199<span>/year</span></div>
+                                    <p>Save 43% compared to monthly</p>
+                                    <ul class="plan-features">
+                                        <li><i class="fas fa-check"></i> All Pro Features</li>
+                                        <li><i class="fas fa-check"></i> 15 Stock Alerts</li>
+                                        <li><i class="fas fa-check"></i> Weekly Reports</li>
+                                        <li><i class="fas fa-check"></i> Portfolio Analysis</li>
+                                    </ul>
+                                    <button class="plan-cta">Select Plan</button>
+                                </div>
+                                
+                                <div class="plan-card animate-fade-in" style="animation-delay: 0.4s">
+                                    <div class="plan-title">Lifetime</div>
+                                    <div class="plan-price">$499<span>/one-time</span></div>
+                                    <p>Best value for long-term investors</p>
+                                    <ul class="plan-features">
+                                        <li><i class="fas fa-check"></i> All Pro Features</li>
+                                        <li><i class="fas fa-check"></i> Unlimited Alerts</li>
+                                        <li><i class="fas fa-check"></i> All Reports</li>
+                                        <li><i class="fas fa-check"></i> API Access</li>
+                                        <li><i class="fas fa-check"></i> Premium Support</li>
+                                    </ul>
+                                    <button class="plan-cta">Select Plan</button>
+                                </div>
+                            </div>
+                            
+                            <div class="payment-form animate-fade-in" id="payment-form">
+                                <h3>Payment Information</h3>
+                                
+                                <div class="payment-methods">
+                                    <div class="payment-method active" data-method="credit">
+                                        <i class="fas fa-credit-card"></i>
+                                        <div>Credit Card</div>
+                                    </div>
+                                    <div class="payment-method" data-method="paypal">
+                                        <i class="fab fa-paypal"></i>
+                                        <div>PayPal</div>
+                                    </div>
+                                    <div class="payment-method" data-method="crypto">
+                                        <i class="fab fa-bitcoin"></i>
+                                        <div>Crypto</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="card-name">Name on Card</label>
+                                        <input type="text" id="card-name" placeholder="John Doe">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="card-number">Card Number</label>
+                                        <input type="text" id="card-number" placeholder="XXXX XXXX XXXX XXXX">
+                                    </div>
+                                </div>
+                                
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="card-expiry">Expiry Date</label>
+                                        <input type="text" id="card-expiry" placeholder="MM/YY">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="card-cvc">CVC</label>
+                                        <input type="text" id="card-cvc" placeholder="CVC">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="card-zip">Zip/Postal Code</label>
+                                        <input type="text" id="card-zip" placeholder="12345">
+                                    </div>
+                                </div>
+                                
+                                <button class="submit-payment animate-pulse">Complete Purchase</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Contact Me Section -->
+            <div class="contact-section animate-fade-in">
+                <h2>Contact Me</h2>
+                <p>Have questions about the Financial Market Predictor or need custom financial analysis? Reach out to me!</p>
+                
+                <form class="contact-form" id="contact-form" action="/api/contact" method="post">
+                    <input type="text" name="name" placeholder="Your Name" required>
+                    <input type="email" name="email" placeholder="Your Email" required>
+                    <input type="text" name="subject" placeholder="Subject">
+                    <textarea name="message" placeholder="Your Message" required></textarea>
+                    <input type="hidden" name="recipient" value="hidayatullah2269@gmail.com">
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" name="subscribe" checked>
+                            Subscribe to market updates and tips
+                        </label>
+                    </div>
+                    <button type="submit" class="animate-shimmer">Send Message</button>
+                </form>
+                
+                <!-- This will be shown after form submission -->
+                <div class="success-message" style="display: none;">
+                    <div class="success-checkmark">
+                        <div class="checkmark-circle"></div>
+                        <div class="checkmark-stem"></div>
+                        <div class="checkmark-kick"></div>
+                    </div>
+                    <h3>Message Sent Successfully!</h3>
+                    <p>Thank you for reaching out. I'll get back to you at your email address as soon as possible.</p>
+                </div>
+            </div>
+            
+            <!-- Footer -->
+            <div class="footer animate-fade-in">
+                <div class="social-links">
+                    <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-linkedin"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-github"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-discord"></i></a>
+                </div>
+                <p>© 2025 Financial Market Predictor. All rights reserved.</p>
+                <p>Data provided for educational purposes only. Not financial advice.</p>
+                <p>Contact: <a href="mailto:hidayatullah2269@gmail.com">hidayatullah2269@gmail.com</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html> 
